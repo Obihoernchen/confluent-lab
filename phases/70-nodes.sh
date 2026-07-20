@@ -77,25 +77,6 @@ phase_run() {
         "- the same file is in the profiles' syncfiles list, so nodes receive it too"
     run_cfl "confluent2hosts -a -f everything"
 
-    if ! vssh "command -v confluent2dnsmasq" >/dev/null 2>&1; then
-        # newer than the released packages; take it from this repo checkout
-        [ -f "$BASEDIR/../confluent/confluent_client/bin/confluent2dnsmasq" ] || die \
-            "the installed confluent has no confluent2dnsmasq and this checkout does not provide one either"
-        run_lab vscp "$BASEDIR/../confluent/confluent_client/bin/confluent2dnsmasq" \
-            "root@$SERVER_MGMT_IP:/opt/confluent/bin/confluent2dnsmasq"
-        run_vlab "chmod 755 /opt/confluent/bin/confluent2dnsmasq"
-    fi
-    explain "DNS and DHCP data from the same database" \
-        "confluent2dnsmasq generates a dnsmasq config from the attribute database:" \
-        "- one static DHCP reservation per node network with a MAC" \
-        "- with --all-options: gateway/DNS/domain/NTP/MTU reply data from the attributes" \
-        "- dnsmasq also serves DNS for $DNS_DOMAIN from /etc/hosts and forwards everything else upstream ($DNS_UPSTREAM)" \
-        "The nodes' dns.servers attribute points at this server."
-    run_cfl "confluent2dnsmasq everything --all-options -y"
-    explain "Enabling dnsmasq" \
-        "It reads the generated reservations plus /etc/hosts and starts serving:"
-    run_cfl "systemctl enable --now dnsmasq"
-
     explain "BMC addresses like real hardware" \
         "A real BMC is a separate box with its own address on the management network," \
         "listening on the standard Redfish port 443. The lab mimics that:" \

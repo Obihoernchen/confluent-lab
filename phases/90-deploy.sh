@@ -120,10 +120,6 @@ phase_run() {
     run_cfl "ssh node01 uname -r"
     explain "node02 really runs from RAM"
     run_cfl "ssh node02 'hostname && df -h /'"
-    explain "DNS works on the nodes"
-    run_cfl "ssh node01 getent hosts node02.$DNS_DOMAIN"
-    explain "The nodes reach the internet through the NAT gateway"
-    run_cfl "ssh node01 curl -sm 10 -o /dev/null -w '%{http_code}' https://repo.almalinux.org && echo"
 
     explain "Things to try now" \
         "- ssh into the nodes from this notebook: ssh -J root@$SERVER_MGMT_IP root@$NODE01_IP" \

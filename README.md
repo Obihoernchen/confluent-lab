@@ -100,8 +100,7 @@ all lab state lives in `run/`, `cache/` and the libvirt pool.
    nodes share, including expression attributes (`net.ipv4_address=`
    `172.31.0.{10+n1}/24`, BMC port `{8440+n1}`); per node only the MAC.
    `confluent2hosts -a -f everything` generates /etc/hosts from the database
-   (confluent only answers PXE for resolvable nodes), `confluent2dnsmasq
-   everything --all-options -y` generates the dnsmasq DHCP/DNS config, first
+   (confluent only answers PXE for resolvable nodes), first
    `nodepower` against the BMCs, NAT gateway.
 8. **stateless** — `imgutil build` + `imgutil pack` → profile
    `alma10-stateless` (encrypted squashfs, copied fully into RAM at boot:
