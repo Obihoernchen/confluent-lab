@@ -10,7 +10,7 @@ script builds a complete deployment setup in VMs on your Linux notebook or serve
   image built with imgutil, running entirely from RAM),
 - one emulated **Redfish BMC per node** (sushy-emulator), so confluent's
   hardware management (`nodepower`, ...) works like against real servers.
-- Everthing in less than 15 minutes
+- everything set-up in less than 15 minutes
 
 Every step prints what it does and why: green descriptions with bold
 headings, blue `[root@confluent ~]#` commands — the actual confluent
@@ -35,7 +35,7 @@ through NAT on the confluent VM and use it as their DNS server (dnsmasq,
 domain `confluent.lab`). **Every password in the lab is `confluent`** (BMC
 admin, root on the server, root on the nodes) — deliberately trivial.
 
-## Demo
+### Demo
 
 [![asciicast](https://asciinema.org/a/1261184.svg)](https://asciinema.org/a/1261184)
 
