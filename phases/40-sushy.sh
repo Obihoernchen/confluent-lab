@@ -16,11 +16,11 @@ phase_run() {
     mkdir -p "$RUNDIR/sushy"
     if [ ! -x "$RUNDIR/sushy/venv/bin/sushy-emulator" ]; then
         run_lab python3 -m venv --system-site-packages "$RUNDIR/sushy/venv"
-        run_lab "$RUNDIR/sushy/venv/bin/pip" install --quiet sushy-tools bcrypt
+        run_lab "$RUNDIR/sushy/venv/bin/pip" install --disable-pip-version-check --quiet sushy-tools bcrypt
     fi
     if ! "$RUNDIR/sushy/venv/bin/python" -c 'import libvirt' 2>/dev/null; then
-        run_lab "$RUNDIR/sushy/venv/bin/pip" install --quiet libvirt-python || die \
-            "python libvirt bindings unavailable; install python3-libvirt (Fedora/EL) or python3-libvirt (Debian) and re-run"
+        run_lab "$RUNDIR/sushy/venv/bin/pip" install --disable-pip-version-check --quiet libvirt-python || die \
+            "python libvirt bindings unavailable; install python3-libvirt and re-run"
     fi
 
     if [ ! -f "$RUNDIR/sushy/sushy.pem" ]; then
