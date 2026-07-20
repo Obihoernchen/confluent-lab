@@ -10,6 +10,7 @@ script builds a complete deployment setup in VMs on your Linux notebook or serve
   image built with imgutil, running entirely from RAM),
 - one emulated **Redfish BMC per node** (sushy-emulator), so confluent's
   hardware management (`nodepower`, ...) works like against real servers.
+- Everthing in less than 15 minutes
 
 Every step prints what it does and why: green descriptions with bold
 headings, blue `[root@confluent ~]#` commands — the actual confluent
