@@ -25,20 +25,19 @@ phase_run() {
     explain "Everything shared, in one command" \
         "All of it lands on the group; every member node inherits it:"
     run_cfl "nodegroupattrib node \\
+    deployment.useinsecureprotocols=firmware \\
+    hardwaremanagement.manager='{node}-bmc' \\
+    hardwaremanagement.method=redfish \\
+    secret.hardwaremanagementuser=admin \\
+    secret.hardwaremanagementpassword=$LABPASSWORD \\
+    dns.domain=$DNS_DOMAIN \\
+    dns.servers=$SERVER_INTERNAL_IP \\
+    net.bmc.hostname='{node}-bmc' \\
+    net.bmc.ipv4_address='$BMC_ADDR_NET.{$BMC_ADDR_OCTET+n1}' \\
     net.ipv4_method=static \\
     net.ipv4_gateway=$SERVER_INTERNAL_IP \\
     net.ipv4_address='$INTERNAL_NET.{10+n1}/24' \\
-    dns.domain=$DNS_DOMAIN \\
-    dns.servers=$SERVER_INTERNAL_IP \\
-    hardwaremanagement.method=redfish \\
-    net.bmc.hostname='{node}-bmc' \\
-    net.bmc.ipv4_address='$BMC_ADDR_NET.{$BMC_ADDR_OCTET+n1}' \\
-    hardwaremanagement.manager='{node}-bmc' \\
-    secret.hardwaremanagementuser=admin \\
-    secret.hardwaremanagementpassword=$LABPASSWORD \\
     pubkeys.tls_hardwaremanager='sha256\$$fp' \\
-    deployment.useinsecureprotocols=firmware \\
-    deployment.apiarmed=continuous \\
     crypted.rootpassword='$pwhash'"
 
     explain "What these attributes do" \
@@ -49,9 +48,6 @@ phase_run() {
         "  pins the BMC's self-signed TLS certificate by its sha256 fingerprint" \
         "- deployment.useinsecureprotocols=firmware: allow plain PXE/HTTP for the" \
         "  firmware boot stage (UEFI http-boot without signed certs)" \
-        "- deployment.apiarmed=continuous: nodes may fetch a deployment API token on" \
-        "  every boot. The diskless node02 needs this -- it has no disk to keep its" \
-        "  token. Production would use 'once' per deployment, or TPM-sealed tokens." \
         "- crypted.rootpassword: root password hash for deployed nodes ('$LABPASSWORD')"
 
     explain "Defining the nodes" \
@@ -83,9 +79,9 @@ phase_run() {
 
     if ! vssh "command -v confluent2dnsmasq" >/dev/null 2>&1; then
         # newer than the released packages; take it from this repo checkout
-        [ -f "$BASEDIR/../confluent_client/bin/confluent2dnsmasq" ] || die \
+        [ -f "$BASEDIR/../confluent/confluent_client/bin/confluent2dnsmasq" ] || die \
             "the installed confluent has no confluent2dnsmasq and this checkout does not provide one either"
-        run_lab vscp "$BASEDIR/../confluent_client/bin/confluent2dnsmasq" \
+        run_lab vscp "$BASEDIR/../confluent/confluent_client/bin/confluent2dnsmasq" \
             "root@$SERVER_MGMT_IP:/opt/confluent/bin/confluent2dnsmasq"
         run_vlab "chmod 755 /opt/confluent/bin/confluent2dnsmasq"
     fi
