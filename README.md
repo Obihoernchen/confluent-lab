@@ -1,10 +1,9 @@
-# confluent quickstart lab
+# Confluent Quickstart Lab
 
 A guided, self-contained learning environment for new confluent users. One
-script builds a complete deployment setup in VMs on your Linux notebook:
+script builds a complete deployment setup in VMs on your Linux notebook or server:
 
-- a **confluent server VM** (AlmaLinux 10, latest released confluent packages
-  from hpc.lenovo.com),
+- a **confluent server VM** (AlmaLinux 10 with Confluent),
 - **node01**, a client VM with a disk, deployed **stateful** (unattended
   AlmaLinux install to disk),
 - **node02**, a client VM with **no disk at all**, booted **stateless** (an
@@ -34,6 +33,10 @@ The nodes' only connection is the isolated network; they reach the internet
 through NAT on the confluent VM and use it as their DNS server (dnsmasq,
 domain `confluent.lab`). **Every password in the lab is `confluent`** (BMC
 admin, root on the server, root on the nodes) — deliberately trivial.
+
+## Demo
+
+[![asciicast](https://asciinema.org/a/1261184.svg)](https://asciinema.org/a/1261184)
 
 ## Requirements
 
