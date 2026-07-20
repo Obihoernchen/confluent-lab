@@ -254,6 +254,7 @@ EOF
         "Waiting for the server VM to finish its first boot (cloud-init applies the" \
         "network config and your ssh key; typically under two minutes). The view" \
         "switches to the server's serial console meanwhile."
+    sleep 5
     console_focus con-confluent
     local i
     for i in $(seq 60); do
@@ -264,7 +265,7 @@ EOF
         console_focus main
         die "server VM not reachable at $SERVER_MGMT_IP after 5 minutes; check: sudo tail $CONSOLEDIR/$SERVER_VM.log"
     fi
-    sleep 10  # leave the console in view a moment before switching back
+    sleep 5  # leave the console in view a moment before switching back
     console_focus main
     ok "server VM is up: ssh root@$SERVER_MGMT_IP"
     milestone "Infrastructure is in place: 1 network, 3 VMs, BMCs come next"

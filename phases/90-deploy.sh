@@ -66,18 +66,19 @@ phase_run() {
 
         explain "Watching the install" \
             "node01 now PXE-boots into the AlmaLinux installer; the install takes" \
-            "5-25 minutes. The view switches to node01's serial console now and" \
+            "5-10 minutes. The view switches to node01's serial console now and" \
             "returns here automatically when the install is done (Ctrl-b + window" \
             "number to move around yourself; 'nodeconsole node01' on the server works" \
             "too). Meanwhile 'nodedeploy node01' status changes are printed here --" \
             "the node reports its progress back to confluent, ending at 'completed:'" \
             "after the installed system's first boot."
+        sleep 5
         console_focus con-node01
         watch_deploy node01 'completed:' 40 || {
             console_focus main
             die "node01 did not reach 'completed' within 40 minutes; check the console log and /var/log/confluent/events on the server"
         }
-        sleep 10  # leave the console in view a moment before switching back
+        sleep 5  # leave the console in view a moment before switching back
         console_focus main
         ok "node01 is deployed and booted from its disk"
     fi
@@ -96,16 +97,17 @@ phase_run() {
             "- the profile must remain armed: the node re-downloads the same image on every single boot -- that is what stateless means" \
             "- so instead of a status, the lab asks the node itself: reachable over ssh, root filesystem in RAM?"
         power_up node02
+        sleep 5
         console_focus con-node02
-        local deadline=$(( $(date +%s) + 25 * 60 ))
+        local deadline=$(( $(date +%s) + 30 * 60 ))
         until node02_up; do
             if [ "$(date +%s)" -ge "$deadline" ]; then
                 console_focus main
-                die "node02 not reachable within 25 minutes; check the console log ($CONSOLEDIR/$NODE02_VM.log) and /var/log/confluent/events on the server"
+                die "node02 not reachable within 30 minutes; check the console log ($CONSOLEDIR/$NODE02_VM.log) and /var/log/confluent/events on the server"
             fi
             sleep 15
         done
-        sleep 10  # leave the console in view a moment before switching back
+        sleep 5  # leave the console in view a moment before switching back
         console_focus main
         ok "node02 is running the stateless image from RAM"
     fi
@@ -117,7 +119,7 @@ phase_run() {
     explain "node01 really runs its installed OS"
     run_cfl "ssh node01 uname -r"
     explain "node02 really runs from RAM"
-    run_cfl "ssh node02 'hostname && head -1 /proc/mounts'"
+    run_cfl "ssh node02 'hostname && df -h /'"
     explain "DNS works on the nodes"
     run_cfl "ssh node01 getent hosts node02.$DNS_DOMAIN"
     explain "The nodes reach the internet through the NAT gateway"
